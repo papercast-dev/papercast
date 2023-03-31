@@ -1,0 +1,4 @@
+myst-parser
+sphinx==4.5.0
+sphinx-book-theme
+sphinxcontrib-mermaid

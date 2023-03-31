@@ -1,0 +1,10 @@
+papercast.egg-info
+__pycache__/
+*.ipynb
+.DS_Store
+.vscode
+workspace.code-workspace
+0.5.5.zip.1
+*.ipynb
+tests
+__pycache__
