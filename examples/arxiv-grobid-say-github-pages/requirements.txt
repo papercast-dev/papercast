@@ -1,0 +1,4 @@
+git+https://github.com/papercast-dev/papercast-arxiv.git
+git+https://github.com/papercast-dev/papercast-say.git
+git+https://github.com/papercast-dev/papercast-github-pages-podcast.git
+git+https://github.com/papercast-dev/papercast-grobid.git
