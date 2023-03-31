@@ -10,20 +10,18 @@ An extensible framework to turn technical documents into multimedia. Written in 
 
 ## Interfaces
 - Run your document processing pipelines with **Papercast Server**.
-- Add documents from other devices with **Papercast Client** and **Papercast CLI**.
+- Add documents from other devices with the **Papercast CLI**.
 
 ## Modules
 ```{mermaid}
 graph LR
-    Collect --> Extract --> Filter --> Narrate --> Publish
+    Collect --> Process --> Publish
 ```
 Papercast is designed around 5 types of modules:
 
-- [Collectors](modules/collectors.md) add documents to the project.
-- [Extractors](modules/extractors.md) convert documents to a usable format.
-- [Filters](modules/filters.md) transform the document (as simple as removing line breaks, or as complex as using a language model to generate a summary).
-- [Narrators](modules/narrators.md) convert the text to audio.
-- [Publishers](modules/publishers.md) publish the result to your desired endpoint (e.g. a podcast feed).
+- [Collectors](modules/collectors.md) accept document identifiers and return Productions.
+- [Processors](modules/extractors.md) modify Productions.
+- [Publishers](modules/publishers.md) publish Productions to your desired endpoint (e.g. a podcast feed, Twitter, etc).
 
 Customize the behavior at each of these steps by writing your own modules.
 
@@ -37,9 +35,7 @@ getting_started.md
 :caption: Modules
 :hidden:
 ./modules/collectors.md
-./modules/extractors.md
-./modules/filters.md
-./modules/narrators.md
+./modules/processors.md
 ./modules/publishers.md
 ./modules/types.md
 ```
