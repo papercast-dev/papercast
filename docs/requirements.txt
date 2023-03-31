@@ -1,5 +1,5 @@
 myst-parser
 sphinx==4.5.0
 sphinx-book-theme
-pydata-sphinx-theme
+pydata-sphinx-theme==0.13.1
 sphinxcontrib-mermaid
