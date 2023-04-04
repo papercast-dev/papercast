@@ -1,5 +1,5 @@
-Filters
+Processors
 ==================
-.. automodule:: papercast.filters
+.. automodule:: papercast.processors
    :members:
    :undoc-members:

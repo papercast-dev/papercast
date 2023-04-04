@@ -3,7 +3,7 @@ from papercast.collectors.arxiv import ArxivCollector
 from papercast.collectors.pdf import PDFCollector
 from papercast.processors.say import SayProcessor
 from papercast.processors import GROBIDProcessor
-from papercast.publishers.github_pages import GitHubPagesPodcastPublisher
+from papercast.publishers.github_pages import GithubPagesPodcastPublisher
 from papercast.server import Server
 
 # Create a pipeline
@@ -27,7 +27,7 @@ pipeline.add_processor("say", SayProcessor(mp3_dir="data/mp3s", txt_dir="data/tx
 
 pipeline.add_processor(
     "github_pages",
-    GitHubPagesPodcastPublisher(
+    GithubPagesPodcastPublisher(
         title="<your-podcast-title>",
         base_url="<your-github-pages-url>",
         language="en-us",

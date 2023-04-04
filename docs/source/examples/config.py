@@ -2,7 +2,7 @@ from papercast.pipelines import Pipeline
 from papercast.collectors import SemanticScholarCollector, ArxivCollector, PDFCollector
 from papercast.narrators import Narrator, SayNarrator, PollyNarrator
 from papercast.extractors import Extractor, GROBIDExtractor
-from papercast.publishers import Publisher, GitHubPagesPodcastPublisher
+from papercast.publishers import Publisher, GithubPagesPodcastPublisher
 
 
 class MyPipeline(Pipeline):
@@ -16,4 +16,4 @@ class MyPipeline(Pipeline):
         self.extractors = [GROBIDExtractor(input_names={"pdf": "pdf"})]
         self.narrators = [PollyNarrator()]
         self.filters = []
-        self.publishers = [GitHubPagesPodcastPublisher()]
+        self.publishers = [GithubPagesPodcastPublisher()]

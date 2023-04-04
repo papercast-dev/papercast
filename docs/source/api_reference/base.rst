@@ -1,5 +1,5 @@
-Narrators
+Base
 ==================
-.. automodule:: papercast.narrators
+.. automodule:: papercast.base
    :members:
    :undoc-members:
