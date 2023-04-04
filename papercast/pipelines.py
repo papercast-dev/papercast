@@ -26,8 +26,8 @@ class Pipeline:
             self.downstream_processors[name] = processor
 
     def connect(self, a_name: str, a_output: str, b_name: str, b_input: str):
-        a_type = self.processors[a_name].output_types()[a_output]
-        b_type = self.processors[b_name].input_types()[b_input]
+        a_type = self.processors[a_name].output_types[a_output]
+        b_type = self.processors[b_name].input_types[b_input]
 
         if not a_type == b_type:
             raise TypeError(
@@ -54,10 +54,11 @@ class Pipeline:
 
         return sorted_processors[::-1]
 
+    @property
     def input_types(self) -> Dict[str, Any]:
         input_types = {}
         for processor in self.collectors.values():
-            input_types.update(processor.input_types())
+            input_types.update(processor.input_types)
         return input_types
 
     # def _check_one_connected_component(self):
@@ -74,9 +75,9 @@ class Pipeline:
     # self._check_one_connected_component()
 
     def _validate_run_kwargs(self, kwargs):
-        input_kwargs = {k: v for k, v in kwargs.items() if k in self.input_types()}
+        input_kwargs = {k: v for k, v in kwargs.items() if k in self.input_types}
         options_kwargs = {
-            k: v for k, v in kwargs.items() if k not in self.input_types()
+            k: v for k, v in kwargs.items() if k not in self.input_types
         }
 
         if len(input_kwargs) != 1:
@@ -88,7 +89,7 @@ class Pipeline:
         input_value = list(input_kwargs.values())[0]
 
         collector = [
-            tuple(c) for c in self.collectors.items() if input_key in c[1].input_types()
+            tuple(c) for c in self.collectors.items() if input_key in c[1].input_types
         ][0]
 
         return collector[0], collector[1], input_key, input_value, options_kwargs
