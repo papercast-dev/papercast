@@ -13,7 +13,7 @@ class ValidationError(Exception):
 def validate_inputs(func):
     @wraps(func)
     def wrapper(processor_instance, input_object):
-        input_types = processor_instance.input_types()
+        input_types = processor_instance.input_types
         for input_key in input_types:
             if not hasattr(input_object, input_key):
                 raise ValidationError(
@@ -57,15 +57,6 @@ class BaseProcessor(BasePipelineComponent, ABC):
         c_handler.setFormatter(c_format)
         self.logger.addHandler(c_handler)
 
-
-    @abstractmethod
-    def input_types(self) -> Dict[str, Any]:
-        pass
-
-    @abstractmethod
-    def output_types(self) -> Dict[str, Any]:
-        pass
-
 class BaseCollector(BasePipelineComponent, ABC):
     def __init__(
         self,
@@ -84,13 +75,6 @@ class BaseCollector(BasePipelineComponent, ABC):
     def process(self, *args, **kwargs) -> Production:
         raise NotImplementedError
 
-    @abstractmethod
-    def input_types(self) -> Dict[str, Any]:
-        pass
-
-    @abstractmethod
-    def output_types(self) -> Dict[str, Any]:
-        pass
 
 class BasePublisher(BasePipelineComponent, ABC):
     def __init__(

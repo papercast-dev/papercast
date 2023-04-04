@@ -11,7 +11,7 @@ def load_plugins():
             raise TypeError(f"Plugin {entry_point.name} should be aa subclass of papercast.base.BasePipelineComponent")
         
         if not hasattr(plugin_module, 'output_types'):
-            raise TypeError(f"Plugin {entry_point.name} should have an output_types method")
+            raise TypeError(f"Plugin {entry_point.name} should have an output_types property")
         
         if not hasattr(plugin_module, 'process'):
             raise TypeError(f"Plugin {entry_point.name} should have a process method")
