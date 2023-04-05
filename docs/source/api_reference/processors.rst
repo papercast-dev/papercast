@@ -1,5 +1,9 @@
+
 Processors
-==================
-.. automodule:: papercast.processors
-   :members:
-   :undoc-members:
+==========
+
+.. toctree::
+    :maxdepth: 2
+    :glob: 
+
+    processors/* 
