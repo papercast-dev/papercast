@@ -1,8 +1,9 @@
-from papercast.base import BaseCollector
-from papercast.base import BasePipelineComponent
+from papercast.base import BaseCollector, BaseSubscriber, BasePipelineComponent
+from papercast.production import Production
 from typing import Iterable, Dict, Any
 from collections import defaultdict
-
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 
 class Pipeline:
     def __init__(self, name: str):
@@ -10,7 +11,9 @@ class Pipeline:
         self.connections = defaultdict(list)
         self.processors = {}
         self.collectors = {}
+        self.subscribers = {}
         self.downstream_processors = {}
+        self.executor = ThreadPoolExecutor()
 
     def _validate_name(self, name: str):
         if name in [p.name for p in self.processors.values()]:
@@ -19,9 +22,15 @@ class Pipeline:
     def add_processor(self, name: str, processor: BasePipelineComponent):
         self._validate_name(name)
         setattr(processor, "name", name)
+
         self.processors[name] = processor
+
         if isinstance(processor, BaseCollector):
             self.collectors[name] = processor
+
+        elif isinstance(processor, BaseSubscriber):
+            self.subscribers[name] = processor
+
         else:
             self.downstream_processors[name] = processor
 
@@ -94,15 +103,15 @@ class Pipeline:
 
         return collector[0], collector[1], input_key, input_value, options_kwargs
 
-    def get_downstream_processors(self, collector_name: str) -> Iterable[str]:
+    def get_downstream_processors(self, collector_subscriber_name: str) -> Iterable[str]:
         """Get all processors downstream of the collector with name `collector_name`
         by recursively traversing the graph of connections.
         """
         downstream_processors = set()
 
-        if not self.connections[collector_name]:
+        if not self.connections[collector_subscriber_name]:
             raise ValueError(
-                f"Collector {collector_name} is not connected to any downstream processors"
+                f"Collector {collector_subscriber_name} is not connected to any downstream processors"
             )
 
         def visit(processor_name: str):
@@ -111,14 +120,33 @@ class Pipeline:
                 for _, next_processor_name, _ in self.connections[processor_name]:
                     visit(next_processor_name)
 
-        for _, downstream_processor, _ in self.connections[collector_name]:
+        for _, downstream_processor, _ in self.connections[collector_subscriber_name]:
             visit(downstream_processor)
 
         return downstream_processors
+    
+    async def _name_wrapper(self, name, task):
+        return name, await task
+
+    async def _start_subscribers(self):
+        tasks = [self._name_wrapper(s.name, asyncio.create_task(s.subscribe())) for s in self.subscribers.values()]
+        results = asyncio.gather(*tasks)
+
+        for subscriber_name, production in results:
+            await self._run_downstream_async(production, subscriber_name)
+        
+    async def _run_downstream_async(self, production: Production, collector_subscriber_name: str, **options):
+        processing_graph = self.get_downstream_processors(collector_subscriber_name)
+        sorted_processors = self._topological_sort(processing_graph) # TODO: do the sorts on initialization, or call this from the Server.
+
+        for name in sorted_processors:
+            production = self.processors[name].process(production, **options)
+        
+    def _run_downstream_sync(self, production: Production, sorted_processors, **options):
+        asyncio.run(self._run_downstream_async(production, sorted_processors, **options))
 
     def run(self, **kwargs):
         # self.validate()
-        # check that only one of the kwargs corresponds to an input of one of the input processors
 
         (
             collector_name,
@@ -128,11 +156,8 @@ class Pipeline:
             options,
         ) = self._validate_run_kwargs(kwargs)
 
-        processing_graph = self.get_downstream_processors(collector_name)
-
-        sorted_processors = self._topological_sort(processing_graph)
-
         production = collector.process(**{param: value}, **options)
 
-        for name in sorted_processors:
-            production = self.processors[name].process(production, **options)
+        self._run_downstream_sync(production, collector_name, **options)
+
+

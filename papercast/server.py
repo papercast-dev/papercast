@@ -4,6 +4,10 @@ from papercast.pipelines import Pipeline
 from fastapi import HTTPException, APIRouter
 import uvicorn
 
+import asyncio
+import websockets
+import aiohttp
+
 
 class Server:
     def __init__(self, pipelines: Dict[str, Pipeline]):
@@ -45,20 +49,27 @@ class Server:
     def serialize_pipeline(self, pipeline: Pipeline):
         return {
             "collectors": [collector.asdict() for collector in pipeline.collectors],
-            "narrators": [narrator.asdict() for narrator in pipeline.narrators],
-            "extractors": [extractor.asdict() for extractor in pipeline.extractors],
-            "filters": [filter.asdict() for filter in pipeline.filters],
-            "publishers": [publisher.asdict() for publisher in pipeline.publishers],
+            "subscribers": [extractor.asdict() for extractor in pipeline.subscribers],
+            "processors": [narrator.asdict() for narrator in pipeline.processors],
         }
 
-    def run(
-        self,
-        host: str = "",
-        port: int = 8000,
-    ):
-        uvicorn.run(
-            self.app,
-            host=host,
-            port=port,
-            log_level="debug",
-        )
+    # def run(
+    #     self,
+    #     host: str = "",
+    #     port: int = 8000,
+    # ):
+    #     uvicorn.run(
+    #         self.app,
+    #         host=host,
+    #         port=port,
+    #         log_level="debug",
+    #     )
+
+    async def _run_async(self, host: str, port: int):
+        config = Config(app=self.app, host=host, port=port, log_level="debug")
+        server = Server(config=config)
+        await server.serve()
+
+
+    def run(self, host: str = "", port: int = 8000):
+        asyncio.run(self._run_async(host, port))

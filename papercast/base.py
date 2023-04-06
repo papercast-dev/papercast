@@ -2,9 +2,11 @@ import logging
 from abc import ABC, abstractmethod
 from functools import wraps
 from typing import Any, Dict
+import websockets
+from websockets.client import connect
+from typing import AsyncGenerator, AsyncIterable
 
 from papercast.production import Production
-
 
 class ValidationError(Exception):
     pass
@@ -36,6 +38,14 @@ class BasePipelineComponent(ABC):
     def __eq__(self, other):
         return id(self) == id(other)
 
+    def init_logger(self, log_level: int = logging.INFO):
+        self.logger = logging.getLogger(__name__)
+        c_handler = logging.StreamHandler()
+        c_format = logging.Formatter("%(name)s - %(levelname)s - %(message)s")
+        c_handler.setLevel(log_level)
+        c_handler.setFormatter(c_format)
+        self.logger.addHandler(c_handler)
+
     @abstractmethod
     def process(self, input: Production, *args, **kwargs) -> Production:
         raise NotImplementedError
@@ -43,57 +53,62 @@ class BasePipelineComponent(ABC):
 
 
 class BaseProcessor(BasePipelineComponent, ABC):
+    input_types: Dict[str, Any] = {}
+    output_types: Dict[str, Any] = {}
+
     def __init__(
         self,
     ) -> None:
         self.init_logger()
         self.name = None
 
-    def init_logger(self, log_level: int = logging.INFO):
-        self.logger = logging.getLogger(__name__)
-        c_handler = logging.StreamHandler()
-        c_format = logging.Formatter("%(name)s - %(levelname)s - %(message)s")
-        c_handler.setLevel(log_level)
-        c_handler.setFormatter(c_format)
-        self.logger.addHandler(c_handler)
-
 class BaseCollector(BasePipelineComponent, ABC):
+    output_types: Dict[str, Any] = {}
+
     def __init__(
         self,
     ) -> None:
         pass
-
-    def init_logger(self, log_level: int = logging.INFO):
-        self.logger = logging.getLogger(__name__)
-        c_handler = logging.StreamHandler()
-        c_format = logging.Formatter("%(name)s - %(levelname)s - %(message)s")
-        c_handler.setLevel(log_level)
-        c_handler.setFormatter(c_format)
-        self.logger.addHandler(c_handler)
 
     @abstractmethod
     def process(self, *args, **kwargs) -> Production:
         raise NotImplementedError
 
-
-class BasePublisher(BasePipelineComponent, ABC):
+class BaseSubscriber(BasePipelineComponent, ABC):
     def __init__(
         self,
     ) -> None:
         pass
 
-    def init_logger(self, log_level: int = logging.INFO):
-        self.logger = logging.getLogger(__name__)
-        c_handler = logging.StreamHandler()
-        c_format = logging.Formatter("%(name)s - %(levelname)s - %(message)s")
-        c_handler.setLevel(log_level)
-        c_handler.setFormatter(c_format)
-        self.logger.addHandler(c_handler)
+    @abstractmethod
+    async def subscribe(self) -> Production:
+        raise NotImplementedError
+
+class WebSocketSubscriber(BaseSubscriber, ABC):
+    def __init__(self, url) -> None:
+        super().__init__()
+        self.url = url
+    
+    @abstractmethod
+    def process_message(self, message) -> Production:
+        # process the message and return a Production object
+        return Production()
+    
+    async def subscribe(self) -> AsyncIterable[Production]:
+        async with connect(self.url) as websocket:
+            while True:
+                message = await websocket.recv()
+                yield self.process_message(message)
+
+
+class BasePublisher(BasePipelineComponent, ABC):
+    input_types: Dict[str, Any] = {}
+
+    def __init__(
+        self,
+    ) -> None:
+        pass
 
     @abstractmethod
     def process(self, input: Production, *args, **kwargs) -> None:
         raise NotImplementedError
-
-    @abstractmethod
-    def input_types(self) -> Dict[str, Any]:
-        pass
