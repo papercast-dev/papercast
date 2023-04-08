@@ -9,3 +9,4 @@ workspace.code-workspace
 tests
 __pycache__
 .env
+build
