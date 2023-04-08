@@ -5,9 +5,6 @@ from fastapi import HTTPException, APIRouter
 import uvicorn
 
 import asyncio
-import websockets
-import aiohttp
-
 
 class Server:
     def __init__(self, pipelines: Dict[str, Pipeline]):
@@ -21,6 +18,7 @@ class Server:
         self.router.add_api_route("/pipelines", self.__pipelines)
         self.app = FastAPI()
         self.app.include_router(self.router)
+        self.app.add_event_handler("startup", self._startup)
 
     def _root(self):
         return {"message": "Papercast Server"}
@@ -33,6 +31,10 @@ class Server:
         pipeline.run(**data)
 
         return {"message": f"Documents added to pipeline {pipeline.name}"}
+    
+    async def _startup(self):
+        for name, pipeline in self._pipelines.items():
+            await pipeline._start_subscribers()
 
     def get_pipeline(self, pipeline: str):
         if pipeline not in self._pipelines.keys():
@@ -48,28 +50,16 @@ class Server:
 
     def serialize_pipeline(self, pipeline: Pipeline):
         return {
-            "collectors": [collector.asdict() for collector in pipeline.collectors],
+            # "collectors": [collector.asdict() for collector in pipeline.collectors],
             "subscribers": [extractor.asdict() for extractor in pipeline.subscribers],
             "processors": [narrator.asdict() for narrator in pipeline.processors],
         }
 
-    # def run(
-    #     self,
-    #     host: str = "",
-    #     port: int = 8000,
-    # ):
-    #     uvicorn.run(
-    #         self.app,
-    #         host=host,
-    #         port=port,
-    #         log_level="debug",
-    #     )
-
-    async def _run_async(self, host: str, port: int):
-        config = Config(app=self.app, host=host, port=port, log_level="debug")
-        server = Server(config=config)
-        await server.serve()
-
-
     def run(self, host: str = "", port: int = 8000):
-        asyncio.run(self._run_async(host, port))
+        uvicorn.run(
+            self.app,
+            host=host,
+            port=port,
+            log_level="debug",
+        )
+        

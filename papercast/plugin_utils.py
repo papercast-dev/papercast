@@ -23,11 +23,11 @@ def load_plugins(plugin_type: str):
     for entry_point in importlib.metadata.entry_points().get(f'papercast.{plugin_type}', []):
         plugin_module = entry_point.load()
 
-        if plugin_type == "collectors":
-            validate_process_method(plugin_module)
-            validate_output_types(plugin_module)
+        # if plugin_type == "collectors":
+        #     validate_process_method(plugin_module)
+        #     validate_output_types(plugin_module)
 
-        elif plugin_type == "subscribers":
+        if plugin_type == "subscribers":
             validate_base_pipeline_component(plugin_module)
             validate_output_types(plugin_module)
 

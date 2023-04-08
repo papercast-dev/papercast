@@ -45,11 +45,7 @@ class BasePipelineComponent(ABC):
         c_handler.setLevel(log_level)
         c_handler.setFormatter(c_format)
         self.logger.addHandler(c_handler)
-
-    @abstractmethod
-    def process(self, input: Production, *args, **kwargs) -> Production:
-        raise NotImplementedError
-
+    
 
 
 class BaseProcessor(BasePipelineComponent, ABC):
@@ -62,17 +58,14 @@ class BaseProcessor(BasePipelineComponent, ABC):
         self.init_logger()
         self.name = None
 
-class BaseCollector(BasePipelineComponent, ABC):
-    output_types: Dict[str, Any] = {}
-
-    def __init__(
-        self,
-    ) -> None:
-        pass
-
     @abstractmethod
-    def process(self, *args, **kwargs) -> Production:
+    @validate_inputs
+    def process(self, input: Production, *args, **kwargs) -> Production:
         raise NotImplementedError
+
+    def from_kwargs(self, **kwargs):
+        production = Production(**kwargs)
+        return self.process(production)
 
 class BaseSubscriber(BasePipelineComponent, ABC):
     def __init__(
@@ -84,21 +77,7 @@ class BaseSubscriber(BasePipelineComponent, ABC):
     async def subscribe(self) -> Production:
         raise NotImplementedError
 
-class WebSocketSubscriber(BaseSubscriber, ABC):
-    def __init__(self, url) -> None:
-        super().__init__()
-        self.url = url
-    
-    @abstractmethod
-    def process_message(self, message) -> Production:
-        # process the message and return a Production object
-        return Production()
-    
-    async def subscribe(self) -> AsyncIterable[Production]:
-        async with connect(self.url) as websocket:
-            while True:
-                message = await websocket.recv()
-                yield self.process_message(message)
+
 
 
 class BasePublisher(BasePipelineComponent, ABC):
@@ -112,3 +91,7 @@ class BasePublisher(BasePipelineComponent, ABC):
     @abstractmethod
     def process(self, input: Production, *args, **kwargs) -> None:
         raise NotImplementedError
+
+    def from_kwargs(self, **kwargs):
+        production = Production(**kwargs)
+        return self.process(production)
