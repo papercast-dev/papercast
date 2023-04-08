@@ -35,7 +35,7 @@ Run anywhere:
 ### Modules
 Papercast is designed around 3 types of modules:
 
-- **Collectors** convert documents to a usable format (plaintext for now).
+- **Processors** convert documents to a usable format (plaintext for now).
 - **Processors** process the document 
 - **Publishers** publish the audio to your desired endpoint (e.g. a podcast feed).
 

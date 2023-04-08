@@ -1,8 +1,8 @@
 
-ArxivCollector
+ArxivProcessor
 ==============
 
-.. autoclass:: papercast.collectors.ArxivCollector
+.. autoclass:: papercast.collectors.ArxivProcessor
     :members:
     :undoc-members:
 

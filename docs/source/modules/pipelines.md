@@ -6,13 +6,13 @@
 
 Papercast pipelines are a way to chain together a series of collectors, processors, and publishers.
 
-Collectors accept document identifiers and return Productions.
+Processors accept document identifiers and return Productions.
 
 Processors accept Productions and return Productions.
 
 Publishers accept Productions and return nothing in the Python environment, but may publish the Production to a remote location.  
 
-Pipelines are constructed by connecting Collectors, Processors, and Publishers together.  The output of one component is the input of the next component.  
+Pipelines are constructed by connecting Processors, Processors, and Publishers together.  The output of one component is the input of the next component.  
 
 To make pipeline components interoperable, they operate on a set of types.  Papercast provides a set of common types. More exotic use cases may require custom types.
 

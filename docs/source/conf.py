@@ -135,7 +135,7 @@ rst_path= docs_path / "api_reference" / "collectors.rst"
 rst_path.parent.mkdir(parents=True, exist_ok=True)
 
 rst_content = textwrap.dedent("""
-    Collectors
+    Processors
     ==========
 
     .. toctree::

@@ -28,7 +28,7 @@ An extensible framework to turn technical documents into multimedia. Written in 
 
 Papercast is designed around 3 types of modules:
 
-- [Collectors](modules/collectors.md) accept document identifiers and return [Productions](modules/productions.md).
+- [Processors](modules/collectors.md) accept document identifiers and return [Productions](modules/productions.md).
 - [Processors](modules/processors.md) modify Productions.
 - [Publishers](modules/publishers.md) publish Productions to your desired endpoint (e.g. a podcast feed, Twitter (coming soon), etc).
 

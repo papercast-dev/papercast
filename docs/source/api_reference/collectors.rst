@@ -1,5 +1,5 @@
 
-Collectors
+Processors
 ==========
 
 .. toctree::
