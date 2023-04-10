@@ -1,0 +1,82 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.plugins-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 200px;
+    height: 100%;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.plugins-types-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    width: 200px;
+    height: 60px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    margin: 1rem;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+}
+
+.middle-section {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 0.3em;
+    padding-bottom: 0.3em;
+}
+
+.plugin-name {
+    font-size: small;
+    font-weight: bold;
+}
+
+.plugin-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.section:not(:last-child) {
+    border-right: 1px solid #333;
+}
+
+.subdivision {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    border-bottom: 1px solid #333;
+}
+
+.subdivision:last-child {
+    border-bottom: none;
+}
+

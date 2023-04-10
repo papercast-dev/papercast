@@ -1,6 +1,12 @@
 # Papercast
 An extensible framework to turn technical documents into multimedia. Written in Python.
 
+
+```{raw} html
+
+    <iframe src="_static/plugins.html" height="345px" width="100%"></iframe>
+```
+
 ## Features
 - Add documents in multiple formats, from popular sources:
     - [ArXiV](https://github.com/papercast-dev/papercast-arxiv)
