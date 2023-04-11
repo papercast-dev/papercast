@@ -1,12 +1,13 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name="papercast",
     version="0.1",
-    py_modules=["papercast"],
     install_requires=[
+        "fastapi",
+        "uvicorn",
     ],
-    packages=["papercast"],
+    packages= find_packages(),
     entry_points="""
         [console_scripts]
         papercast=papercast.scripts.papercast:main
