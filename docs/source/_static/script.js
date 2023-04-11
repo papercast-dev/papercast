@@ -29,7 +29,7 @@ function createBox(plugin, type) {
     // });
     container.appendChild(inputSection);
 
-    const middleSection = document.createElement('div');
+    const middleSection = document.createElement('a');
     middleSection.classList.add('section', 'middle-section');
     if (plugin.icon) {
         console.log(plugin.icon);
@@ -45,10 +45,13 @@ function createBox(plugin, type) {
     pluginName.classList.add('plugin-name');
     pluginName.textContent = plugin.name;
     middleSection.appendChild(pluginName);
-
-
-
+    // Make the middle section a link if the plugin has a website
+    if (plugin.repo) {
+        middleSection.href = "https://github.com/" + plugin.repo;
+    }
     container.appendChild(middleSection);
+
+
 
     if ((type === 'processor') || (type === 'collector')) {
         const outputSection = document.createElement('div');
