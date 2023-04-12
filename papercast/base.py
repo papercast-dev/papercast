@@ -8,6 +8,7 @@ from typing import AsyncGenerator, AsyncIterable
 
 from papercast.production import Production
 
+
 class ValidationError(Exception):
     pass
 
@@ -45,7 +46,6 @@ class BasePipelineComponent(ABC):
         c_handler.setLevel(log_level)
         c_handler.setFormatter(c_format)
         self.logger.addHandler(c_handler)
-    
 
 
 class BaseProcessor(BasePipelineComponent, ABC):
@@ -67,17 +67,16 @@ class BaseProcessor(BasePipelineComponent, ABC):
         production = Production(**kwargs)
         return self.process(production)
 
+
 class BaseSubscriber(BasePipelineComponent, ABC):
     def __init__(
         self,
     ) -> None:
-        pass
+        self.init_logger()
 
     @abstractmethod
     async def subscribe(self) -> Production:
         raise NotImplementedError
-
-
 
 
 class BasePublisher(BasePipelineComponent, ABC):
