@@ -3,8 +3,8 @@ from papercast.production import Production
 from typing import Iterable, Dict, Any
 from collections import defaultdict
 import asyncio
-from typing import AsyncIterable, Coroutine
 from concurrent.futures import ThreadPoolExecutor
+
 
 class Pipeline:
     def __init__(self, name: str):
@@ -71,24 +71,9 @@ class Pipeline:
             input_types.update(processor.input_types)
         return input_types
 
-    # def _check_one_connected_component(self):
-    #     not_connected = set()
-    #     for processor in self.processors:
-    #         if processor not in self.downstream_processors:
-    #             not_connected.add(processor)
-
-    #     raise ValueError(
-    #         f"Found {len(not_connected)} processors that are not connected to the pipeline: {not_connected}"
-    #     )
-
-    # def validate(self):
-    # self._check_one_connected_component()
-
     def _validate_run_kwargs(self, kwargs):
         input_kwargs = {k: v for k, v in kwargs.items() if k in self.input_types}
-        options_kwargs = {
-            k: v for k, v in kwargs.items() if k not in self.input_types
-        }
+        options_kwargs = {k: v for k, v in kwargs.items() if k not in self.input_types}
 
         if len(input_kwargs) != 1:
             raise ValueError(
@@ -104,7 +89,9 @@ class Pipeline:
 
         return collector[0], collector[1], input_key, input_value, options_kwargs
 
-    def get_downstream_processors(self, collector_subscriber_name: str) -> Iterable[str]:
+    def get_downstream_processors(
+        self, collector_subscriber_name: str
+    ) -> Iterable[str]:
         """Get all processors downstream of the collector with name `collector_name`
         by recursively traversing the graph of connections.
         """
@@ -125,47 +112,36 @@ class Pipeline:
             visit(downstream_processor)
 
         return downstream_processors
-    
-    async def _name_wrapper(self, name, task):
-        return name, await task
 
-    async def _start_subscribers(self):
-        """ Start all subscribers
-            Each subscriber yields an AsyncIterable of Productions
-            When we get a Production, we run it through the downstream processors
+    async def _run_subscriber(self, subscriber_name: str):
+        subscriber = self.subscribers[subscriber_name]
+        loop = asyncio.get_event_loop()
+        processing_graph = self.get_downstream_processors(subscriber_name)
+        sorted_processors = self._topological_sort(processing_graph)
+        async for production in subscriber.subscribe():
+            await loop.run_in_executor(
+                None, self.process, production, sorted_processors
+            )
 
+    async def _run_in_server(self):
+        await asyncio.gather(*[self._run_subscriber(name) for name in self.subscribers])
+
+    def process(
+        self, production: Production, collector_subscriber_name: str, **options
+    ) -> None:
         """
-        while True:
-            for subscriber in self.subscribers.values():
-                async for production in subscriber.subscribe():
-                    await self._run_downstream_async(production, subscriber.name)
-        # tasks = [self._name_wrapper(s.name, asyncio.create_task(s.subscribe())) for s in self.subscribers.values()]
-        # results = asyncio.gather(*tasks)
-
-        # for subscriber_name, production in results:
-            # await self._run_downstream_async(production, subscriber_name)
-
-    #     for subscriber in self.subscribers.values():
-    #         async for
-    #     # tasks = [self._name_wrapper(s.name, asyncio.create_task(s.subscribe())) for s in self.subscribers.values()]
-    #     # results = asyncio.gather(*tasks)
-
-    #     # for subscriber_name, production in results:
-    # #     #     yield self._run_downstream_async(production, subscriber_name)
-        
-    async def _run_downstream_async(self, production: Production, collector_subscriber_name: str, **options) -> None:
+        Run the pipeline synchronously on a production, from a collector or subscriber.
+        """
+        print(f"Processing production {production}...")
         processing_graph = self.get_downstream_processors(collector_subscriber_name)
-        sorted_processors = self._topological_sort(processing_graph) # TODO: do the sorts on initialization, or call this from the Server.
-
+        sorted_processors = self._topological_sort(processing_graph)
         for name in sorted_processors:
             production = self.processors[name].process(production, **options)
-        
-    def _run_downstream_sync(self, production: Production, sorted_processors, **options):
-        asyncio.run(self._run_downstream_async(production, sorted_processors, **options))
 
     def run(self, **kwargs):
-        # self.validate()
-
+        """
+        Run the pipeline synchronously, from kwargs.
+        """
         (
             collector_name,
             collector,
@@ -175,7 +151,4 @@ class Pipeline:
         ) = self._validate_run_kwargs(kwargs)
 
         production = collector.process(**{param: value}, **options)
-
-        self._run_downstream_sync(production, collector_name, **options)
-
-
+        self.process(production, collector_subscriber_name=collector_name, **options)
