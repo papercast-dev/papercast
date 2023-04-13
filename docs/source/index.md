@@ -4,7 +4,7 @@ An extensible framework to turn technical documents into multimedia. Written in 
 
 ```{raw} html
 
-    <iframe src="_static/plugins.html" height="345px" width="100%"></iframe>
+    <iframe src="_static/plugins.html" width="100%" height="500" frameborder="0" style="border:0; overflow: hidden;" allowfullscreen=""></iframe>
 ```
 
 *More plugins coming soon! Write your own!*

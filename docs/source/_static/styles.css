@@ -12,10 +12,6 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    max-width: 200px;
-    /* height: 500px; */
-    /* Scroll y */
-    /* overflow-y: auto; */
     margin-left: 1rem;
     margin-right: 1rem;
 }
@@ -24,6 +20,7 @@ body {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+    column-gap: 10px;
 }
 
 .container {
@@ -31,8 +28,7 @@ body {
     flex-direction: column;
     justify-content: space-between;
     align-items: stretch;
-    width: 200px;
-    /* height: 60px; */
+
     border-radius: 10px;
     overflow: hidden;
     border: 1px solid #333;
@@ -40,7 +36,6 @@ body {
     margin: 1rem;
 }
 
-/* Give the container an inset shadow on hover */
 
 .container:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
@@ -49,7 +44,6 @@ body {
 .section {
     display: flex;
     flex-direction: column;
-    /* width: 20%; */
     font-size: x-small;
     padding-left: 0.1em;
     padding-right: 0.1em;
@@ -58,13 +52,11 @@ body {
 }
 
 .output-subdivision {
-    /* border-left: 1px solid #333; */
     padding-left: 1em;
     padding-right: 1em;
 }
 
 .input-subdivision {
-    /* border-right: 1px solid #333; */
     padding-left: 1em;
     padding-right: 1em;
 
@@ -75,8 +67,6 @@ body {
     text-decoration: none;
     display: flex;
     flex-direction: column;
-    /* width: 60%; */
-    /* height: 100px; */
     padding-left: 1em;
     padding-right: 1em;
     padding-top: 0.3em;
@@ -86,12 +76,12 @@ body {
 }
 
 .input-section {
-    width: 100px;
+    width: 50%;
     align-self: flex-start;
 }
 
 .output-section {
-    width: 100px;
+    width: 50%;
     border-left: 1px solid #333;
 }
 
@@ -121,24 +111,11 @@ body {
 }
 
 
-/* .middle-section:hover::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-    pointer-events: none;
-} */
-
 .plugin-name {
     font-size: x-small;
     font-weight: bold;
 }
 
-/* Underline the plugin-name on hover */
 
 .plugin-name:hover {
     text-decoration: underline;
@@ -149,9 +126,6 @@ body {
     object-fit: contain;
 }
 
-/* .section:not(:last-child) { */
-    /* border-right: 1px solid #333; */
-/* } */
 
 .subdivision {
     display: flex;
