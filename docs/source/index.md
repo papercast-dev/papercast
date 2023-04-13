@@ -1,27 +1,27 @@
 # Papercast
 An extensible framework to turn technical documents into multimedia. Written in Python.
 
+
+```{raw} html
+
+    <iframe src="_static/plugins.html" height="345px" width="100%"></iframe>
+```
+
+*More plugins coming soon! Write your own!*
+
 ## Features
 - Add documents in multiple formats, from popular sources:
-    - [ArXiV](https://github.com/papercast-dev/papercast-arxiv)
-    - [SemanticScholar](https://github.com/papercast-dev/papercast-semanticscholar)
-    - ... and more! Write your own!
 - Define pipelines to process documents using any tool you can think of
-    - [GROBID]() for PDF extraction
-    - TTS tools for narration
-    - ... and more! Summarization, other AI tools, etc. coming soon! Write your own!
 - Publish your productions to multiple endpoints
-    - Self-hosted RSS podcast using GitHub Pages
-    - Any other endpoint you can think of! Seriously, write a plugin!
 - Run anywhere
-- Add documents from any machine with a terminal with the CLI
+- Add documents from any machine with the CLI
+
+## Pipelines
+- Combine tools to create a document processing pipeline
 
 ## Interfaces
 - Run your document processing pipelines standalone or give them an API with [Papercast Server](server/server.md).
 - Add documents from other devices with the [Papercast CLI](cli/cli.md).
-
-## Pipelines
-- Combine tools to create a document processing pipeline
 
 
 ## Pipeline Components
