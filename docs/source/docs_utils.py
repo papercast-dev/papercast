@@ -11,6 +11,7 @@ import subprocess
 from pathlib import Path
 from dotenv import load_dotenv
 from dataclasses import dataclass
+import shutil
 
 PLUGINS_LIST_URL = "https://raw.githubusercontent.com/papercast-dev/papercast-community/main/plugins.jsonc"
 
@@ -60,6 +61,10 @@ def get_plugin_list(docs_env: str) -> Optional[List[Plugin]]:
 
 def clone_plugin(repo_url, target_folder) -> bool:
     try:
+        if os.path.exists(target_folder):
+            print(f"Removing existing folder {target_folder}")
+            # remove, even if there are files there
+            shutil.rmtree(target_folder, ignore_errors=True)
         subprocess.check_call(["git", "clone", repo_url, target_folder])
         print(f"Successfully cloned {repo_url} into {target_folder}")
         return True

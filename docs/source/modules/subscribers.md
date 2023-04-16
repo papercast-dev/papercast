@@ -1,4 +1,8 @@
 # Subscribers
+```{toctree} 
+:hidden:
+:maxdepth: 1
+```
 
 Subscribers can be used to wait for events and trigger pipeline runs when they occur.
 

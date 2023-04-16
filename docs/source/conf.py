@@ -16,6 +16,7 @@ from docs_utils import (  # type: ignore
 load_dotenv()
 
 DOCS_ENV = os.getenv("DOCS_ENV", "rtd")
+FORCE_CLONE = os.getenv("FORCE_CLONE", True)
 
 sys.path.insert(0, os.path.abspath("../.."))
 
@@ -68,7 +69,7 @@ if plugins is not None:
         plugin_repo = f"https://github.com/{plugin.repo}.git"
         plugin_path = PLUGIN_DOCS_PATH / plugin.id
 
-        if not plugin_path.exists():
+        if not plugin_path.exists() or FORCE_CLONE:
             if DOCS_ENV == "local":
                 os.symlink(plugin.local, plugin_path)
             else:

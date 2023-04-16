@@ -34,11 +34,16 @@ Papercast is designed around 3 types of modules:
 
 Customize the behavior at each of these steps by writing your own modules.
 
+```{toctree}
+:caption: Contributing
+:hidden:
+./contributing.md
+```
 
 ```{toctree}
 :caption: Modules
 :hidden:
-./modules/collectors.md
+./modules/subscribers.md
 ./modules/processors.md
 ./modules/publishers.md
 ./modules/productions.md

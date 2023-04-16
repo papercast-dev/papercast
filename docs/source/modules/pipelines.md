@@ -4,7 +4,7 @@
 :maxdepth: 1
 ```
 
-Papercast pipelines are a way to chain together a series of collectors, processors, and publishers.
+Papercast pipelines are a way to chain together a series of subscribers, processors, and publishers.
 
 Processors accept document identifiers and return Productions.
 
@@ -26,46 +26,4 @@ from papercast.types import Text, Author, Title, MP3
 def process(input: Production[Text, Author, Title]) -> Production[MP3]:
     ...
 ```
-
-We need to resolve the issue that multiple attributes might have the same type:
-
-We can do this when we construct the pipeline.
-
 Each pipeline element has `inputs` and `outputs` that map attribute names at the global (pipeline) scope to attribute names at the processor level.
-
-```python
-from papercast.collectors import SemanticScholar
-from papercast.processors import Summarization
-
-pipeline_components = 
-[
-    SemanticScholar(
-        inputs={
-            "id": "paper_id",
-            },
-        outputs={
-            "abstract": "abstract",
-            "title": "title",
-            }
-        ),
-    Summarization(
-        inputs={
-            "abstract": "text"
-        }, 
-        outputs={
-            "summary": "paper_summary"
-        }
-        ),
-    Summarization(
-        inputs={
-            "title": "text"
-        }, 
-        outputs={
-            "summary": "title_summary"
-        }
-    ),
-]
-```
-
-
-
