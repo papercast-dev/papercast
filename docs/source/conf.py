@@ -2,7 +2,9 @@ import os
 import sys
 import os
 from dotenv import load_dotenv
-from .docs_utils import (
+
+sys.path.insert(0, os.path.abspath("."))
+from docs_utils import (  # type: ignore
     get_plugin_list,
     clone_plugin,
     install_plugin,
@@ -74,7 +76,8 @@ if plugins is not None:
 
         install_plugin(str(plugin_path))
 
-        contribs.update(plugin.contributes)
+        if plugin.contributes is not None:
+            contribs.update(plugin.contributes)
 
 make_parent_rst()
 make_child_rst(contribs)

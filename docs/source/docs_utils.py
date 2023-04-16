@@ -35,8 +35,8 @@ class Plugin:
     description: str
     type: str
     repo: str
-    local: str
-    contributes: Dict[str, PluginContrib]
+    contributes: Optional[Dict[str, PluginContrib]] = None
+    local: Optional[str] = None
 
 
 def get_plugin_list(docs_env: str) -> Optional[List[Plugin]]:
@@ -94,8 +94,10 @@ def install_plugin(plugin_path) -> bool:
 
 def make_parent_rst():
     for contrib_type in ["subscribers", "processors", "publishers", "types"]:
-        rst_path = DOCS_PATH / "api_reference" / "{contrib_type}.rst"
+        rst_path = DOCS_PATH / "api_reference" / f"{contrib_type}.rst"
+        rst_path_dir = DOCS_PATH / "api_reference" / contrib_type
         rst_path.parent.mkdir(parents=True, exist_ok=True)
+        rst_path_dir.mkdir(parents=True, exist_ok=True)
 
         rst_content = textwrap.dedent(
             f"""
@@ -106,7 +108,7 @@ def make_parent_rst():
                 :maxdepth: 2
                 :glob: 
 
-                contrib_type/* 
+                {contrib_type}/* 
             """
         )
 
@@ -116,21 +118,25 @@ def make_parent_rst():
 
 def make_child_rst(contribs: Dict[str, PluginContrib]):
     for contrib_name, contrib in contribs.items():
-        contrib_type = contrib_name.split(".")[1]
-        contrib_name_only = contrib_name.split(".")[-1]
+        try:
+            contrib_type = contrib_name.split(".")[1]
+            contrib_name_only = contrib_name.split(".")[-1]
 
-        rst_content = textwrap.dedent(
-            f"""
-            {contrib_name_only}
-            {"=" * len(contrib_name_only)}
+            rst_content = textwrap.dedent(
+                f"""
+                {contrib_name_only}
+                {"=" * len(contrib_name_only)}
 
-            .. autoclass:: {contrib_name}
-                :members:
-                :undoc-members:
+                .. autoclass:: {contrib_name}
+                    :members:
+                    :undoc-members:
 
-            """
-        )
+                """
+            )
 
-        rst_path = DOCS_PATH / "api_reference" / contrib_type
-        with (rst_path / (contrib_name_only.lower() + ".rst")).open("w") as f:
-            f.write(rst_content)
+            rst_path = DOCS_PATH / "api_reference" / contrib_type
+            with (rst_path / (contrib_name_only.lower() + ".rst")).open("w") as f:
+                f.write(rst_content)
+
+        except Exception as e:
+            print(f"Failed to make child rst for {contrib_name}. Error: {e}")
