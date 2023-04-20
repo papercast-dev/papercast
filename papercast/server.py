@@ -40,7 +40,6 @@ class Server:
     def serialize_pipelines(self):
         def serialize_pipeline(pipeline: Pipeline):
             return {
-                # "collectors": [collector.asdict() for collector in pipeline.collectors],
                 "subscribers": [extractor.asdict() for extractor in pipeline.subscribers],
                 "processors": [narrator.asdict() for narrator in pipeline.processors],
             }
