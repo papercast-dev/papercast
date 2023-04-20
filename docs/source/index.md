@@ -35,6 +35,13 @@ Papercast is designed around 3 types of modules:
 Customize the behavior at each of these steps by writing your own modules.
 
 ```{toctree}
+:caption: Examples
+:hidden:
+./examples/github_pages_podcast.md
+```
+
+
+```{toctree}
 :caption: Contributing
 :hidden:
 ./contributing.md
