@@ -43,6 +43,18 @@ class BasePipelineComponent(ABC):
         c_handler.setLevel(log_level)
         c_handler.setFormatter(c_format)
         self.logger.addHandler(c_handler)
+    
+    def serialize(self):
+        processor_data = {}
+        # "type": str(type(processor).__name__),
+
+        processor_data["type"] = str(self.__class__.__name__)
+        if hasattr(self, "input_types"): 
+            processor_data["input_types"] = {k: v.__name__ for k, v in getattr(self,"input_types").items()}
+        if hasattr(self, "output_types"):
+            processor_data["output_types"] = {k: v.__name__ for k, v in getattr(self,"output_types").items()}
+        
+        return processor_data
 
 
 class BaseProcessor(BasePipelineComponent, ABC):
