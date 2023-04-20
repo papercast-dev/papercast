@@ -3,6 +3,7 @@ from papercast.production import Production
 from typing import Iterable, Dict, Any
 from collections import defaultdict
 import asyncio
+import json
 from concurrent.futures import ThreadPoolExecutor
 
 
@@ -204,3 +205,41 @@ class Pipeline:
         production = Production(**{param: value})
         production = collector.process(production, **options)
         self.process(production, collector_subscriber_name=collector_name, **options)
+
+    def to_dict(self) -> Dict[str, Any]:
+        pipeline_data = {
+            "name": str(self.name),
+            "processors": {},
+            "connections": [],
+        }
+
+        # add processor data
+        for name, processor in self.processors.items():
+            processor_data = processor.serialize()
+            pipeline_data["processors"][name] = processor_data
+
+        # add connection data
+        for a_name, connections in self.connections.items():
+            for a_output, b_name, b_input in connections:
+                connection_data = {
+                    "source": {
+                        "name": str(a_name),
+                        "output": str(a_output),
+                    },
+                    "destination": {
+                        "name": str(b_name),
+                        "input": str(b_input),
+                    },
+                }
+                pipeline_data["connections"].append(connection_data)
+
+        return pipeline_data
+
+    def serialize(self):
+        """
+        Returns a JSON-serialized representation of the pipeline, including its components and connections.
+
+        Returns:
+            str: A JSON-serialized string representing the pipeline.
+        """
+        return json.dumps(self.to_dict(), indent=4)
