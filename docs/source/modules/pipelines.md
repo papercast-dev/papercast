@@ -6,7 +6,7 @@
 
 Papercast pipelines are a way to chain together a series of subscribers, processors, and publishers.
 
-Processors accept document identifiers and return Productions.
+Subscribers respond to events and return Productions.
 
 Processors accept Productions and return Productions.
 
