@@ -24,6 +24,15 @@ class Server:
         return {"message": "Papercast Server"}
 
     def _get_pipeline(self, pipeline: str):
+        """
+        Get a pipeline by name.
+
+        Args:
+            pipeline (str): The name of the pipeline.
+
+        Raises:
+            HTTPException: If the pipeline is not found.
+        """
         if pipeline not in self._pipelines.keys():
             raise HTTPException(status_code=404, detail="Pipeline not found")
         return self._pipelines[pipeline]
@@ -32,21 +41,30 @@ class Server:
         self,
         data: Dict[Any, Any] = Body(...),
     ):
+        """
+        Add a document to a pipeline.
+
+        Args:
+            data (Dict[Any, Any]): The data to be added to the pipeline.
+        
+        Returns:
+            Dict[str, str]: A message indicating that the document was added to the pipeline.
+        """
         pipeline = self._get_pipeline(data["pipeline"])  # type: Pipeline
         pipeline.run(**data)
 
         return {"message": f"Document(s) added to pipeline {pipeline.name}"}
 
     def serialize_pipelines(self):
-        def serialize_pipeline(pipeline: Pipeline):
-            return {
-                "subscribers": [extractor.asdict() for extractor in pipeline.subscribers],
-                "processors": [narrator.asdict() for narrator in pipeline.processors],
-            }
+        """
+        Return Server pipelines with components and connections as a JSON serializable dictionary.
 
+        Returns:
+            Dict[str, Dict[str, Any]]: A dictionary containing the serialized pipelines.
+        """
         return {
             "pipelines": {
-                k: serialize_pipeline(p) for k, p in self._pipelines.items()
+                name: pipeline.to_dict() for name, pipeline in self._pipelines.items()
             }
         }
 
@@ -65,6 +83,13 @@ class Server:
             self._pipeline_tasks.append(task)
     
     def run(self, host: str = "", port: int = 8000):
+        """
+        Run the server.
+
+        Args:
+            host (str, optional): The host to run the server on. Defaults to "".
+            port (int, optional): The port to run the server on. Defaults to 8000.
+        """
         uvicorn.run(
             self.app,
             host=host,
