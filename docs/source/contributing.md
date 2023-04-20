@@ -1,5 +1,9 @@
 # Contributing
 
+## To request a plugin...
+
+Make an issue in the [papercast-community repo](https://github.com/papercast-dev/papercast-community) and tag it with the "plugin" label.
+
 ## To contribute a plugin...
 
 ... Follow these steps:
