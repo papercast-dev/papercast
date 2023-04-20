@@ -4,7 +4,16 @@ import requests
 
 def call_api(endpoint, params):
     print(f"Calling {endpoint} with parameters {params}.")
-    base_url = "http://localhost:8000"
+    if "hostname" in params:
+        base_url = f"http://{params['hostname']}"
+        del params["hostname"]
+    else:
+        base_url = "http://localhost"
+    if "port" in params:
+        base_url += f":{params['port']}"
+        del params["port"]
+    else:
+        base_url += ":8000"
     print(f"{base_url}/{endpoint}")
     response = requests.post(f"{base_url}/{endpoint}", json=params)
     return response.json()
@@ -23,8 +32,8 @@ def parse_arguments():
             key = arg[2:]
             if key:
                 params[key] = []
-        elif key in params: # type: ignore
-            params[key].append(arg) # type: ignore
+        elif key in params:  # type: ignore
+            params[key].append(arg)  # type: ignore
         else:
             print(f"Unexpected parameter {arg}.")
             sys.exit(1)
