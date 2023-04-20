@@ -1,6 +1,6 @@
 # Papercast
 
-[![Documentation Status](https://readthedocs.org/projects/papercast/badge/?version=latest)](https://papercast.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/papercast/badge/?version=0.1.0)](https://papercast.readthedocs.io/en/0.1.0/?badge=0.1.0)
 
 ![papercast logo](./papercast_logo.png)
 
