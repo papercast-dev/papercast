@@ -136,6 +136,7 @@ class Pipeline:
         processing_graph = self.get_downstream_processors(collector_subscriber_name)
         sorted_processors = self._topological_sort(processing_graph)
         for name in sorted_processors:
+            print(f"Processing production {production} with {name}...")
             production = self.processors[name].process(production, **options)
 
     def run(self, **kwargs):
@@ -149,6 +150,6 @@ class Pipeline:
             value,
             options,
         ) = self._validate_run_kwargs(kwargs)
-
-        production = collector.process(**{param: value}, **options)
+        production = Production(**{param: value})
+        production = collector.process(production, **options)
         self.process(production, collector_subscriber_name=collector_name, **options)
