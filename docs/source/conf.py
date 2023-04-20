@@ -1,7 +1,11 @@
 import os
 import sys
 import os
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    print("dotenv not installed. Skipping loading .env file.")
 
 sys.path.insert(0, os.path.abspath("."))
 from docs_utils import (  # type: ignore
@@ -13,7 +17,6 @@ from docs_utils import (  # type: ignore
     PLUGIN_DOCS_PATH,
 )
 
-load_dotenv()
 
 DOCS_ENV = os.getenv("DOCS_ENV", "rtd")
 FORCE_CLONE = os.getenv("FORCE_CLONE", True)
