@@ -6,6 +6,7 @@ from dataclasses import dataclass
 import logging
 
 from papercast.plugin_utils import load_plugins
+from papercast.types import *
 
 _installed_plugins = load_plugins("types")
 
