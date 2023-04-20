@@ -1,4 +1,5 @@
 import sys
+import textwrap
 import requests
 
 
@@ -83,6 +84,28 @@ def parse_arguments():
 
 
 def main():
+    if len(sys.argv) < 2:
+        print(
+            textwrap.dedent(
+                """
+            Usage:
+                api_client.py <endpoint> [--<key> <value> ...] [--hostname <hostname>] [--port <port>]
+
+                Call an API endpoint with the specified parameters.
+
+            Arguments:
+                <endpoint>      The name of the API endpoint to call.
+
+            Options:
+                --<key> <value> Additional parameter(s) to pass to the endpoint. Multiple
+                                values for the same key can be specified, e.g., "--id 1 --id 2".
+                                Hyphen-separated keys are converted to underscore-separated keys.
+                --hostname      The hostname or IP address of the API server. Default is "localhost".
+                --port          The port number of the API server. Default is 8000.
+            """
+            )
+        )
+        sys.exit(1)
     endpoint, params = parse_arguments()
     response = call_api(endpoint, params)
     print(response)
