@@ -1,5 +1,9 @@
+
 Types
-==================
-.. automodule:: papercast.types
-   :members:
-   :undoc-members:
+==========
+
+.. toctree::
+    :maxdepth: 2
+    :glob: 
+
+    types/* 

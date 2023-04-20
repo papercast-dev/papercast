@@ -4,7 +4,7 @@ An extensible framework to turn technical documents into multimedia. Written in 
 
 ```{raw} html
 
-    <iframe src="_static/plugins.html" height="345px" width="100%"></iframe>
+    <iframe src="_static/plugins.html" width="100%" height="500" frameborder="0" style="border:0; overflow: hidden;" allowfullscreen=""></iframe>
 ```
 
 *More plugins coming soon! Write your own!*
@@ -28,17 +28,29 @@ An extensible framework to turn technical documents into multimedia. Written in 
 
 Papercast is designed around 3 types of modules:
 
-- [Collectors](modules/collectors.md) accept document identifiers and return [Productions](modules/productions.md).
+- [Processors](modules/collectors.md) accept document identifiers and return [Productions](modules/productions.md).
 - [Processors](modules/processors.md) modify Productions.
 - [Publishers](modules/publishers.md) publish Productions to your desired endpoint (e.g. a podcast feed, Twitter (coming soon), etc).
 
 Customize the behavior at each of these steps by writing your own modules.
 
+```{toctree}
+:caption: Examples
+:hidden:
+./examples/github_pages_podcast.md
+```
+
+
+```{toctree}
+:caption: Contributing
+:hidden:
+./contributing.md
+```
 
 ```{toctree}
 :caption: Modules
 :hidden:
-./modules/collectors.md
+./modules/subscribers.md
 ./modules/processors.md
 ./modules/publishers.md
 ./modules/productions.md

@@ -1,11 +1,10 @@
 # Papercast
 
+[![Documentation Status](https://readthedocs.org/projects/papercast/badge/?version=0.1.0)](https://papercast.readthedocs.io/en/0.1.0/?badge=0.1.0)
+
 ![papercast logo](./papercast_logo.png)
 
-
-<!-- 
-[![Documentation Status](https://readthedocs.org/projects/papercast/badge/?version=latest)](https://papercast.readthedocs.io/en/latest/?badge=latest)
-An extensible framework for audio narration of technical documents. Written in Python. -->
+An extensible pipeline tool and plugin ecosystem for processing technical documents. Written in Python.
 
 ## Features
 Add documents in multiple formats, from popular sources:
@@ -30,25 +29,5 @@ Run anywhere:
 - Local machine
 - Cloud (AWS, GCP, Azure, etc.)
 
-## How it works
-
-### Modules
-Papercast is designed around 3 types of modules:
-
-- **Collectors** convert documents to a usable format (plaintext for now).
-- **Processors** process the document 
-- **Publishers** publish the audio to your desired endpoint (e.g. a podcast feed).
-
-Customize the behavior at each of these steps by writing your own modules.
-
-### Interfaces
-A papercast instance is accessible via a **command-line interface (CLI)** and a web server via a **REST API**.
-
-## Getting Started
-### Install dependencies
-
-Install papercast and its dependencies
-
-```bash
-pip install -e .
-```
+## More Info
+- [Documentation](https://docs.papercast.dev)

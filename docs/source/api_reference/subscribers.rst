@@ -1,9 +1,9 @@
 
-Collectors
+Subscribers
 ==========
 
 .. toctree::
     :maxdepth: 2
     :glob: 
 
-    collectors/* 
+    subscribers/* 

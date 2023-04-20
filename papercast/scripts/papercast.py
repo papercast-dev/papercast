@@ -23,8 +23,8 @@ def parse_arguments():
             key = arg[2:]
             if key:
                 params[key] = []
-        elif key in params:
-            params[key].append(arg)
+        elif key in params: # type: ignore
+            params[key].append(arg) # type: ignore
         else:
             print(f"Unexpected parameter {arg}.")
             sys.exit(1)

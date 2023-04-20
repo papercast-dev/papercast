@@ -30,7 +30,7 @@ Here's an example:
 
 
 [^1]: (possible support for DAG structure in the future)
-[^2]: Collectors are slightly different in that they start with document identifiers and produce Productions
+[^2]: Processors are slightly different in that they start with document identifiers and produce Productions
 
 ## Use the CLI to start the server
 ```bash

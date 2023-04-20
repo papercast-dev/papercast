@@ -1,5 +1,9 @@
+
 Publishers
-==================
-.. automodule:: papercast.publishers
-   :members:
-   :undoc-members:
+==========
+
+.. toctree::
+    :maxdepth: 2
+    :glob: 
+
+    publishers/* 

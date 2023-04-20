@@ -5,6 +5,12 @@ from pathlib import Path
 from dataclasses import dataclass
 import logging
 
+from papercast.plugin_utils import load_plugins
+
+_installed_plugins = load_plugins("types")
+
+for name, plugin in _installed_plugins.items():
+    globals()[name] = plugin
 
 
 PathLike = Union[str, Path]

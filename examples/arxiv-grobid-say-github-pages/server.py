@@ -1,9 +1,9 @@
 from papercast.pipelines import Pipeline
-from papercast.collectors.arxiv import ArxivCollector
-from papercast.collectors.pdf import PDFCollector
-from papercast.processors.say import SayProcessor
+from papercast.processors import ArxivProcessor
+from papercast.processors import PDFProcessor
+from papercast.processors import SayProcessor
 from papercast.processors import GROBIDProcessor
-from papercast.publishers.github_pages import GithubPagesPodcastPublisher
+from papercast.publishers import GithubPagesPodcastPublisher
 from papercast.server import Server
 
 # Create a pipeline
@@ -11,10 +11,10 @@ pipeline = Pipeline(name="default")
 
 # Add processors to the pipeline
 pipeline.add_processor(
-    "arxiv", ArxivCollector(pdf_dir="data/pdfs", json_dir="data/json")
+    "arxiv", ArxivProcessor(pdf_dir="data/pdfs", json_dir="data/json")
 )
 
-pipeline.add_processor("pdf", PDFCollector(pdf_dir="data/pdfs"))
+pipeline.add_processor("pdf", PDFProcessor(pdf_dir="data/pdfs"))
 
 pipeline.add_processor(
     "grobid",
