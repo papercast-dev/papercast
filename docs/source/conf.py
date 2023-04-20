@@ -1,10 +1,12 @@
 import os
 import sys
 import os
+
 try:
     from dotenv import load_dotenv
+
     load_dotenv()
-except ImportError:
+except Exception:
     print("dotenv not installed. Skipping loading .env file.")
 
 sys.path.insert(0, os.path.abspath("."))
