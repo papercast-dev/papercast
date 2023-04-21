@@ -4,16 +4,12 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-from papercast.plugin_utils import load_plugins
-from papercast.subscribers import *  # type: ignore
+from mutagen.mp3 import MP3
+
 from papercast.types_plugins import *
 
-_installed_plugins = load_plugins("types")
-
-for name, plugin in _installed_plugins.items():
-    globals()[name] = plugin
-
 PathLike = Union[str, Path]
+
 
 @dataclass
 class TxtFile:
@@ -26,8 +22,6 @@ class MP3File:
         self.measured = False
 
     def measure(self):
-        from mutagen.mp3 import MP3
-
         if not self.measured:
             statinfo = os.stat(self.path)
             self._size = str(statinfo.st_size)
@@ -112,6 +106,8 @@ class RichVTT:
             self.logger.info(f"Saving vtt to {filepath_ / f'{filepath_.stem}.vtt'}")
             f.write(self.vtt)
 
+
+from papercast.plugin_utils import load_plugins
 
 _installed_plugins = load_plugins("types")
 
