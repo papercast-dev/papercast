@@ -10,3 +10,4 @@ tests
 __pycache__
 .env
 build
+mypy.ini.bkp
