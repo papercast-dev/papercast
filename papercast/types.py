@@ -1,21 +1,19 @@
-from typing import Union
-import os
-from typing import List, Any
-from pathlib import Path
-from dataclasses import dataclass
 import logging
+import os
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 from papercast.plugin_utils import load_plugins
-from papercast.types import *
+from papercast.subscribers import *  # type: ignore
+from papercast.types_plugins import *
 
 _installed_plugins = load_plugins("types")
 
 for name, plugin in _installed_plugins.items():
     globals()[name] = plugin
 
-
 PathLike = Union[str, Path]
-
 
 @dataclass
 class TxtFile:
@@ -67,11 +65,11 @@ class PDFFile:
 
 @dataclass
 class Author:
-    name: str = None
-    first_name: str = None
-    last_name: str = None
-    affiliation: str = None
-    email: str = None
+    name: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    affiliation: Optional[str] = None
+    email: Optional[str] = None
 
 
 @dataclass
@@ -79,6 +77,7 @@ class RichVTT:
     vtt: str
     images: List[Any]
     equations: List[Any]
+    figures: List[Any]
     log_level: int = logging.INFO
 
     def init_logger(self, log_level: int = logging.INFO):
@@ -96,19 +95,25 @@ class RichVTT:
         filepath : str
             folder to save vtt and images to
         """
-        filepath = Path(filepath)
+        filepath_ = Path(filepath)
         for i, figure in enumerate(self.figures):
-            figure_path = filepath / f"figure_{i}.png"
+            figure_path = filepath_ / f"figure_{i}.png"
             self.vtt = self.vtt.format(**{f"figure_{i}_path": figure_path})
             self.logger.info(f"Saving figure to {figure_path}")
             figure.save(figure_path)
 
         for i, equation in enumerate(self.equations):
-            equation_path = filepath / f"equation_{i}.png"
+            equation_path = filepath_ / f"equation_{i}.png"
             self.vtt = self.vtt.format(**{f"equation_{i}_path": equation_path})
             self.logger.info(f"Saving equation to {equation_path}")
             equation.save(equation_path)
 
-        with open(filepath / filepath.stem + ".vtt", "w") as f:
-            self.logger.info(f"Saving vtt to {filepath / filepath.stem + '.vtt'}")
+        with open(filepath_ / f"{filepath_.stem}.vtt", "w") as f:
+            self.logger.info(f"Saving vtt to {filepath_ / f'{filepath_.stem}.vtt'}")
             f.write(self.vtt)
+
+
+_installed_plugins = load_plugins("types")
+
+for name, plugin in _installed_plugins.items():
+    globals()[name] = plugin

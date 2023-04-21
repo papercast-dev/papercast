@@ -1,5 +1,5 @@
 from papercast.plugin_utils import load_plugins
-from papercast.subscribers import *
+from papercast.subscribers import *  # type: ignore
 
 _installed_plugins = load_plugins("subscribers")
 
