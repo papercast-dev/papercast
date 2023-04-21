@@ -1,4 +1,5 @@
 from papercast.base import BasePipelineComponent
+import warnings
 import importlib.metadata
 from importlib import import_module
 
@@ -34,7 +35,11 @@ def load_plugins(plugin_type: str):
     for entry_point in importlib.metadata.entry_points().get(
         f"papercast.{plugin_type}", []
     ):
-        plugin_module = entry_point.load()
+        try:
+            plugin_module = entry_point.load()
+        except ModuleNotFoundError:
+            warnings.warn(f"Could not load plugin {entry_point.name}.")
+            continue
 
         if plugin_type == "subscribers":
             validate_base_pipeline_component(plugin_module)
