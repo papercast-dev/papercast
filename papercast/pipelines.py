@@ -53,6 +53,16 @@ class Pipeline:
 
         else:
             self.downstream_processors[name] = processor
+    
+    def add_processors(self, processors: Dict[str, BasePipelineComponent]):
+        """
+        Adds multiple processors to the pipeline.
+
+        Args:
+            processors (Dict[str, papercast.base.BasePipelineComponent]): A dictionary of processors to be added.
+        """
+        for name, processor in processors.items():
+            self.add_processor(name, processor)
 
     def connect(self, a_name: str, a_output: str, b_name: str, b_input: str):
         """
