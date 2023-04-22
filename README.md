@@ -1,6 +1,8 @@
 # Papercast
 
 [![Documentation Status](https://readthedocs.org/projects/papercast/badge/?version=0.1.0)](https://papercast.readthedocs.io/en/0.1.0/?badge=0.1.0)
+[![License](https://img.shields.io/github/license/papercast-dev/papercast)](https://github.com/papercast-dev/papercast/blob/main/LICENSE.md)
+[![Papercast Discord](https://dcbadge.vercel.app/api/server/9HewHCP3Tp?compact=true&style=flat)](https://discord.gg/9HewHCP3Tp)
 
 ![papercast logo](./papercast_logo.png)
 
