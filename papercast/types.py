@@ -65,12 +65,63 @@ class PDFFile:
 
 
 @dataclass
+class CoordinateLocatedMixin:
+    """
+    Mixin for objects that have a coordinate location in a document.
+    Useful for documents with fixed layouts, such as PDFs.
+    """
+
+    page: int
+    x0: float
+    y0: float
+    x1: float
+    y1: float
+
+
+@dataclass
 class Author:
     name: str = None
     first_name: str = None
     last_name: str = None
     affiliation: str = None
     email: str = None
+
+
+@dataclass
+class Title:
+    title: str = None
+    subtitle: str = None
+
+
+@dataclass
+class Abstract:
+    abstract: str = None
+    keywords: str = None
+
+
+@dataclass
+class Figure:
+    image: Any
+    caption: str = None
+
+
+@dataclass
+class Table:
+    table: Any
+    image: Any
+    caption: str = None
+
+
+@dataclass
+class SectionHeading:
+    heading: str = None
+    level: int = None
+
+
+@dataclass
+class Equation:
+    equation: Any
+    caption: str = None
 
 
 @dataclass
