@@ -6,6 +6,10 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
 
+class InvalidPipelineComponentError(Exception):
+    pass
+
+
 class Pipeline:
     def __init__(self, name: str):
         self.name = name
@@ -53,7 +57,7 @@ class Pipeline:
 
         else:
             self.downstream_processors[name] = processor
-    
+
     def add_processors(self, processors: Dict[str, BasePipelineComponent]):
         """
         Adds multiple processors to the pipeline.
@@ -121,6 +125,11 @@ class Pipeline:
     def _validate_run_kwargs(self, kwargs):
         input_kwargs = {k: v for k, v in kwargs.items() if k in self.input_types}
         options_kwargs = {k: v for k, v in kwargs.items() if k not in self.input_types}
+
+        if len(input_kwargs) == 0:
+            raise InvalidPipelineComponentError(
+                f"No pipeline component found that accepts any inputs in input_kwargs={input_kwargs}"
+            )
 
         if len(input_kwargs) != 1:
             raise ValueError(
@@ -196,6 +205,7 @@ class Pipeline:
         print(f"Processing production {production}...")
         processing_graph = self.get_downstream_processors(collector_subscriber_name)
         sorted_processors = self._topological_sort(processing_graph)
+
         for name in sorted_processors:
             print(f"Processing production {production} with {name}...")
             production = self.processors[name].process(production, **options)
@@ -204,6 +214,7 @@ class Pipeline:
         """
         Run the pipeline synchronously, from kwargs.
         """
+        print(f"Running pipeline with kwargs {kwargs}...")
         (
             collector_name,
             collector,
