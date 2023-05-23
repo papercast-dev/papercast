@@ -4,11 +4,14 @@ from papercast.pipelines import Pipeline
 from fastapi import HTTPException, APIRouter
 import uvicorn
 import asyncio
+from concurrent.futures import ThreadPoolExecutor
+
 
 class Server:
     def __init__(self, pipelines: Dict[str, Pipeline]):
         self._pipelines = pipelines
         self._pipeline_tasks = []
+        self.executor = ThreadPoolExecutor()
 
         self.router = APIRouter()
         self.router.add_api_route("/", self._root)
@@ -28,32 +31,43 @@ class Server:
             raise HTTPException(status_code=404, detail="Pipeline not found")
         return self._pipelines[pipeline]
 
-    def _add(
+    async def _add(
         self,
         data: Dict[Any, Any] = Body(...),
     ):
-
         if "pipeline" in data:
             pipeline = self._get_pipeline(data["pipeline"])  # type: Pipeline
         elif "default" in self._pipelines.keys():
             pipeline = self._get_pipeline("default")
         else:
             return {"message": "Pipeline not specified and no default pipeline found"}
-        pipeline.run(**data)
 
-        return {"message": f"Document(s) added to pipeline {pipeline.name}"}
+        loop = asyncio.get_running_loop()
+
+        data.pop("pipeline", None)
+        print(data)
+
+        async def run_pipeline():
+            def _run():
+                pipeline.run(**data)
+
+            await loop.run_in_executor(self.executor, _run)
+
+        asyncio.create_task(run_pipeline())
+
+        return {"message": "Document(s) added to pipeline"}
 
     def serialize_pipelines(self):
         def serialize_pipeline(pipeline: Pipeline):
             return {
-                "subscribers": [extractor.asdict() for extractor in pipeline.subscribers],
+                "subscribers": [
+                    extractor.asdict() for extractor in pipeline.subscribers
+                ],
                 "processors": [narrator.asdict() for narrator in pipeline.processors],
             }
 
         return {
-            "pipelines": {
-                k: serialize_pipeline(p) for k, p in self._pipelines.items()
-            }
+            "pipelines": {k: serialize_pipeline(p) for k, p in self._pipelines.items()}
         }
 
     async def _cancel_pipeline_tasks(self):
@@ -69,7 +83,7 @@ class Server:
         for pipeline in self._pipelines.values():
             task = asyncio.create_task(pipeline._run_in_server())
             self._pipeline_tasks.append(task)
-    
+
     def run(self, host: str = "", port: int = 8000):
         uvicorn.run(
             self.app,
@@ -78,4 +92,3 @@ class Server:
             log_level="debug",
             lifespan="on",
         )
-        
