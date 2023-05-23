@@ -32,7 +32,13 @@ class Server:
         self,
         data: Dict[Any, Any] = Body(...),
     ):
-        pipeline = self._get_pipeline(data["pipeline"])  # type: Pipeline
+
+        if "pipeline" in data:
+            pipeline = self._get_pipeline(data["pipeline"])  # type: Pipeline
+        elif "default" in self._pipelines.keys():
+            pipeline = self._get_pipeline("default")
+        else:
+            return {"message": "Pipeline not specified and no default pipeline found"}
         pipeline.run(**data)
 
         return {"message": f"Document(s) added to pipeline {pipeline.name}"}
