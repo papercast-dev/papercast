@@ -1,5 +1,6 @@
 import sys
 import requests
+from papercast.scripts.generate_stubs import generate_stubs
 
 
 def call_api(endpoint, params):
@@ -16,6 +17,11 @@ def parse_arguments():
         sys.exit(1)
 
     endpoint = sys.argv[1]
+
+    if endpoint=="stubs":
+        generate_stubs()
+        sys.exit(0)
+
     params = {}
 
     for arg in sys.argv[2:]:
