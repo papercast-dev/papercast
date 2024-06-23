@@ -5,19 +5,173 @@ from pathlib import Path
 from dataclasses import dataclass
 import logging
 
-from papercast.plugin_utils import load_plugins
 
-_installed_plugins = load_plugins("types")
+# _installed_plugins = load_plugins("types")
 
-for name, plugin in _installed_plugins.items():
-    globals()[name] = plugin
+# for name, plugin in _installed_plugins.items():
+#     globals()[name] = plugin
 
 
 PathLike = Union[str, Path]
 
 
 @dataclass
+class PNGFile:
+    path: PathLike
+
+
+@dataclass
+class JPGFile:
+    path: PathLike
+
+
+@dataclass
+class JPEGFile:
+    path: PathLike
+
+
+@dataclass
+class WEBPFile:
+    path: PathLike
+
+
+@dataclass
+class M4BFile:
+    path: PathLike
+
+
+@dataclass
+class MP3File:
+    path: PathLike
+
+
+@dataclass
+class M4AFile:
+    path: PathLike
+
+
+@dataclass
+class FLACFile:
+    path: PathLike
+
+
+@dataclass
+class OPUSFile:
+    path: PathLike
+
+
+@dataclass
+class OGGFile:
+    path: PathLike
+
+
+@dataclass
+class OGAFile:
+    path: PathLike
+
+
+@dataclass
+class MP4File:
+    path: PathLike
+
+
+@dataclass
+class AACFile:
+    path: PathLike
+
+
+@dataclass
+class WMAFile:
+    path: PathLike
+
+
+@dataclass
+class AIFFFile:
+    path: PathLike
+
+
+@dataclass
+class WAVFile:
+    path: PathLike
+
+
+@dataclass
+class WEBMFile:
+    path: PathLike
+
+
+@dataclass
+class WEBMAFile:
+    path: PathLike
+
+
+@dataclass
+class EPUBFile:
+    path: PathLike
+
+
+@dataclass
+class PDFFile:
+    path: PathLike
+
+
+@dataclass
+class MOBIFile:
+    path: PathLike
+
+
+@dataclass
+class AZW3File:
+    path: PathLike
+
+
+@dataclass
+class CBRFile:
+    path: PathLike
+
+
+@dataclass
+class CBZFile:
+    path: PathLike
+
+
+@dataclass
+class NFOFile:
+    path: PathLike
+
+
+@dataclass
+class TXTFile:
+    path: PathLike
+
+
+@dataclass
+class OPFFile:
+    path: PathLike
+
+
+@dataclass
+class ABSFile:
+    path: PathLike
+
+
+@dataclass
 class TxtFile:
+    path: PathLike
+
+
+@dataclass
+class SRTFile:
+    path: PathLike
+
+
+@dataclass
+class M4BFile:
+    path: PathLike
+
+
+@dataclass
+class M4AFile:
     path: PathLike
 
 

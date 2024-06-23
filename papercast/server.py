@@ -5,10 +5,12 @@ from fastapi import HTTPException, APIRouter
 import uvicorn
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+from loguru import logger
 
 
 class Server:
     def __init__(self, pipelines: Dict[str, Pipeline]):
+        self.logger = logger
         self._pipelines = pipelines
         self._pipeline_tasks = []
         self.executor = ThreadPoolExecutor()
@@ -45,7 +47,7 @@ class Server:
         loop = asyncio.get_running_loop()
 
         data.pop("pipeline", None)
-        print(data)
+        self.logger.info(f"Adding document to pipeline {pipeline.name}")
 
         async def run_pipeline():
             def _run():
@@ -79,7 +81,7 @@ class Server:
                 pass
 
     async def run_pipelines(self):
-        print("Running pipelines")
+        self.logger.info("Running pipelines")
         for pipeline in self._pipelines.values():
             task = asyncio.create_task(pipeline._run_in_server())
             self._pipeline_tasks.append(task)

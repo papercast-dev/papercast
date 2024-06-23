@@ -4,6 +4,7 @@ from typing import Iterable, Dict, Any
 from collections import defaultdict
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+from loguru import logger
 
 
 class InvalidPipelineComponentError(Exception):
@@ -19,6 +20,7 @@ class Pipeline:
         self.subscribers = {}
         self.downstream_processors = {}
         self.executor = ThreadPoolExecutor()
+        self.logger = logger
 
     def _validate_name(self, name: str):
         """
@@ -202,19 +204,19 @@ class Pipeline:
         """
         Run the pipeline synchronously on a production, from a collector or subscriber.
         """
-        print(f"Processing production {production}...")
+        self.logger.info(f"Processing production {production}...")
         processing_graph = self.get_downstream_processors(collector_subscriber_name)
         sorted_processors = self._topological_sort(processing_graph)
 
         for name in sorted_processors:
-            print(f"Processing production {production} with {name}...")
+            self.logger.info(f"Processing production {production} with {name}...")
             production = self.processors[name].process(production, **options)
 
     def run(self, **kwargs):
         """
         Run the pipeline synchronously, from kwargs.
         """
-        print(f"Running pipeline with kwargs {kwargs}...")
+        self.logger.info(f"Running pipeline with kwargs {kwargs}...")
         (
             collector_name,
             collector,
