@@ -4,6 +4,8 @@ from typing import Iterable, Dict, Any
 from collections import defaultdict
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+from typing import List, Any, get_origin, get_args, Union
+from inspect import isclass
 from loguru import logger
 
 
@@ -70,6 +72,34 @@ class Pipeline:
         for name, processor in processors.items():
             self.add_processor(name, processor)
 
+    @classmethod
+    def is_subtype(cls, type1, type2):
+        "check if type1 is a subclass of type2"
+        if type1 == type2:
+            return True
+        elif type2 == Any:
+            return True
+        elif get_origin(type1) is None and get_origin(type2) == Union:
+            return any(cls.is_subtype(type1, arg) for arg in get_args(type2))
+        elif get_origin(type1) is None and get_origin(type2) is None:
+            if isclass(type1) and isclass(type2):
+                if issubclass(type1, type2):
+                    return True
+                else:
+                    return False
+            else:
+                return False
+        elif get_origin(type1) is not None and get_origin(type2) is not None:
+            if len(get_args(type1)) == len(get_args(type2)):
+                return all(
+                    cls.is_subtype(arg1, arg2)
+                    for arg1, arg2 in zip(get_args(type1), get_args(type2))
+                )
+            else:
+                return False
+        else:
+            return False
+
     def connect(self, a_name: str, a_output: str, b_name: str, b_input: str):
         """
         Connects two processors in the pipeline.
@@ -86,7 +116,7 @@ class Pipeline:
         a_type = self.processors[a_name].output_types[a_output]
         b_type = self.processors[b_name].input_types[b_input]
 
-        if not a_type == b_type:
+        if not self.is_subtype(a_type, b_type):
             raise TypeError(
                 f"Cannot connect {a_output} of {a_name} with type {a_type} to {b_input} of {b_name} with type {b_type}"
             )
