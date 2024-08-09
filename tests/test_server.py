@@ -147,11 +147,49 @@ class TestServer:
         with pytest.raises(HTTPException) as exc_info:
             await server._add({})
 
-    def test_serialize_pipelines(self):
+    def test_serialize_empty_pipelines(self):
         server = Server(
             pipelines={"default": Pipeline("default")},
         )
         print(server.serialize_pipelines())
         assert server.serialize_pipelines() == {
             "pipelines": {"default": {"subscribers": [], "processors": []}}
+        }
+
+    def test_serialize_pipelines(self):
+        class MyProcessor(BaseProcessor):
+            input_types = {
+                "input1": int,
+            }
+
+            output_types = {
+                "output1": int,
+            }
+
+            def process(self, input: Production) -> Production:
+                return input
+
+        processor = MyProcessor()
+
+        pipeline = Pipeline("test")
+
+        pipeline.add_processor("test", processor)
+
+        server = Server(
+            pipelines={"default": pipeline},
+        )
+        print(server.serialize_pipelines())
+
+        assert server.serialize_pipelines() == {
+            "pipelines": {
+                "default": {
+                    "subscribers": [],
+                    "processors": [
+                        {
+                            "input_types": {"input1": "int"},
+                            "output_types": {"output1": "int"},
+                        }
+                    ],
+                }
+            }
         }
