@@ -146,3 +146,12 @@ class TestServer:
 
         with pytest.raises(HTTPException) as exc_info:
             await server._add({})
+
+    def test_serialize_pipelines(self):
+        server = Server(
+            pipelines={"default": Pipeline("default")},
+        )
+        print(server.serialize_pipelines())
+        assert server.serialize_pipelines() == {
+            "pipelines": {"default": {"subscribers": [], "processors": []}}
+        }
