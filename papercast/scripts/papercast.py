@@ -1,12 +1,17 @@
 import sys
 import requests
+import json
 
 
 def call_api(endpoint, params):
     print(f"Calling {endpoint} with parameters {params}.")
     base_url = "http://localhost:8000"
     print(f"{base_url}/{endpoint}")
-    response = requests.post(f"{base_url}/{endpoint}", json=params)
+    if params:
+        response = requests.post(f"{base_url}/{endpoint}", json=params)
+    else:
+        response = requests.get(f"{base_url}/{endpoint}")
+    response.raise_for_status()
     return response.json()
 
 
@@ -42,7 +47,7 @@ def parse_arguments():
 def main():
     endpoint, params = parse_arguments()
     response = call_api(endpoint, params)
-    print(response)
+    print(json.dumps(response))
 
 
 if __name__ == "__main__":
