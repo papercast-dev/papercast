@@ -43,7 +43,10 @@ class Server:
         elif "default" in self._pipelines.keys():
             pipeline = self._get_pipeline("default")
         else:
-            return {"message": "Pipeline not specified and no default pipeline found"}
+            raise HTTPException(
+                status_code=400,
+                detail="Pipeline not specified and no default pipeline found",
+            )
 
         loop = asyncio.get_running_loop()
 
