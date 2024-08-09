@@ -13,4 +13,12 @@ setup(
         [console_scripts]
         papercast=papercast.scripts.papercast:main
     """,
+    extras_require={
+        "dev": [
+            "pytest",
+            "pytest-mock",
+            "pytest-asyncio",
+            "pytest-cov",
+        ],
+    },
 )
