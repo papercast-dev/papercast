@@ -5,6 +5,14 @@ from papercast.pipelines import Pipeline
 from papercast.base import BaseProcessor, Production
 
 
+class MyClass:
+    pass
+
+
+class MyInheritedClass(MyClass):
+    pass
+
+
 class TestPipeline:
     @pytest.mark.parametrize(
         "a,b,result",
@@ -15,6 +23,9 @@ class TestPipeline:
             (List[int], List[int], True),
             (List[int], List[Any], True),
             (int, Union[int, float], True),
+            (int, Union[float, str], False),
+            (MyClass, MyInheritedClass, False),
+            (MyInheritedClass, MyClass, True),
         ],
     )
     def test_is_subtype(self, a, b, result):
