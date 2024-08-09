@@ -3,6 +3,7 @@ from papercast.server import Server
 from papercast.pipelines import Pipeline
 from papercast.base import BaseProcessor, Production
 from fastapi import HTTPException
+from typing import List
 
 
 class TestServer:
