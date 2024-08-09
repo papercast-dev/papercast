@@ -55,6 +55,12 @@ class BaseProcessor(BasePipelineComponent, ABC):
         self.init_logger()
         self.name = None
 
+    def asdict(self):
+        return {
+            "input_types": {k: v.__name__ for k, v in self.input_types.items()},
+            "output_types": {k: v.__name__ for k, v in self.output_types.items()},
+        }
+
     @abstractmethod
     @validate_inputs
     def process(self, input: Production, *args, **kwargs) -> Production:
@@ -83,6 +89,11 @@ class BasePublisher(BasePipelineComponent, ABC):
         self,
     ) -> None:
         pass
+
+    def asdict(self):
+        return {
+            "input_types": {k: v.__name__ for k, v in self.input_types.items()},
+        }
 
     @abstractmethod
     def process(self, input: Production, *args, **kwargs) -> None:
