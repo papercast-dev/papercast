@@ -37,6 +37,7 @@ class Server:
         self,
         data: Dict[Any, Any] = Body(...),
     ):
+        "Add a document to a pipeline."
         if "pipeline" in data:
             pipeline = self._get_pipeline(data["pipeline"])  # type: Pipeline
         elif "default" in self._pipelines.keys():
