@@ -58,4 +58,4 @@ def test_main(mocker):
 
     mock_parse_arguments.assert_called_once()
     mock_call_api.assert_called_once_with("test_endpoint", {"param1": "value1"})
-    mock_print.assert_called_once_with({"result": "success"})
+    mock_print.assert_called_once_with('{"result": "success"}')
