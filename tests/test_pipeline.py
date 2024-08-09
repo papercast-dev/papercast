@@ -17,4 +17,5 @@ class TestPipeline:
         ],
     )
     def test_is_subtype(self, a, b, result):
+        "Test whether `a` is a subtype (inclusive) of `b`."
         assert Pipeline.is_subtype(a, b) == result
