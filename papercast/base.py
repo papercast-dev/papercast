@@ -30,6 +30,11 @@ class BasePipelineComponent(ABC):
         super().__init_subclass__(**kwargs)
         # cls.process = validate_inputs(cls.process) # type: ignore # TODO input validation
 
+    def serialize_types(self, types) -> Dict[str, str]:
+        return {
+            k: v.__name__ if isinstance(v, type) else str(v) for k, v in types.items()
+        }
+
     def __hash__(self):
         return id(self)
 
@@ -57,8 +62,8 @@ class BaseProcessor(BasePipelineComponent, ABC):
 
     def asdict(self):
         return {
-            "input_types": {k: v.__name__ for k, v in self.input_types.items()},
-            "output_types": {k: v.__name__ for k, v in self.output_types.items()},
+            "input_types": self.serialize_types(self.input_types),
+            "output_types": self.serialize_types(self.output_types),
         }
 
     @abstractmethod
@@ -92,7 +97,7 @@ class BasePublisher(BasePipelineComponent, ABC):
 
     def asdict(self):
         return {
-            "input_types": {k: v.__name__ for k, v in self.input_types.items()},
+            "input_types": self.serialize_types(self.input_types),
         }
 
     @abstractmethod
