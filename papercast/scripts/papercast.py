@@ -18,13 +18,14 @@ def parse_arguments():
     endpoint = sys.argv[1]
     params = {}
 
+    key = None
     for arg in sys.argv[2:]:
         if arg.startswith("--"):
             key = arg[2:]
             if key:
                 params[key] = []
-        elif key in params: # type: ignore
-            params[key].append(arg) # type: ignore
+        elif key in params:
+            params[key].append(arg)
         else:
             print(f"Unexpected parameter {arg}.")
             sys.exit(1)
