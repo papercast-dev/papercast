@@ -2,6 +2,7 @@ import pytest
 from typing import Any, List, Union
 
 from papercast.pipelines import Pipeline
+from papercast.base import BaseProcessor, Production
 
 
 class TestPipeline:
@@ -19,3 +20,23 @@ class TestPipeline:
     def test_is_subtype(self, a, b, result):
         "Test whether `a` is a subtype (inclusive) of `b`."
         assert Pipeline.is_subtype(a, b) == result
+
+    def test_validate_name(self):
+        "Test that names are validated correctly."
+
+        class MyProcessor(BaseProcessor):
+            input_types = {
+                "input1": int,
+            }
+
+            def process(self, input: Production) -> Production:
+                return input
+
+        processor = MyProcessor()
+
+        pipeline = Pipeline("default")
+        pipeline.add_processor("test", processor)
+
+        with pytest.raises(ValueError):
+            pipeline._validate_name("test")
+        pipeline._validate_name("valid_name")
