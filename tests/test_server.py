@@ -1,7 +1,8 @@
 import pytest
 from papercast.server import Server
 from papercast.pipelines import Pipeline
-from papercast.base import BaseProcessor
+from papercast.base import BaseProcessor, Production
+from fastapi import HTTPException
 
 
 class TestServer:
@@ -29,3 +30,119 @@ class TestServer:
             pipelines={"test": Pipeline("test")},
         )
         assert server._get_pipeline("test") is not None
+
+    @pytest.mark.asyncio
+    async def test_add_valid_input_to_default(self):
+        class MyProcessor(BaseProcessor):
+            input_types = {
+                "input1": int,
+            }
+
+            def process(self, input: Production) -> Production:
+                return input
+
+        processor = MyProcessor()
+
+        pipeline = Pipeline("test")
+
+        pipeline.add_processor("test", processor)
+
+        server = Server(
+            pipelines={"default": pipeline},
+        )
+        result = await server._add({"input1": 5})
+        assert result is not None
+        assert result == {"message": "Document(s) added to pipeline"}
+
+    @pytest.mark.asyncio
+    @pytest.mark.xfail
+    async def test_add_invalid_input_to_default(self):
+        # TODO This test should at least warn the user that the input is invalid
+        # Currently it runs without issue
+        # Though I think the responsiblity of checking
+        # the input should be on the pipeline or the processor
+        class MyProcessor(BaseProcessor):
+            input_types = {
+                "input1": int,
+            }
+
+            def process(self, input: Production) -> Production:
+                return input
+
+        processor = MyProcessor()
+
+        pipeline = Pipeline("test")
+
+        pipeline.add_processor("test", processor)
+
+        server = Server(
+            pipelines={"default": pipeline},
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            result = await server._add({"incorrect_input_key": 5})
+
+    @pytest.mark.asyncio
+    async def test_add_valid_input_to_non_default_pipeline(self):
+        class MyProcessor(BaseProcessor):
+            input_types = {
+                "input1": int,
+            }
+
+            def process(self, input: Production) -> Production:
+                return input
+
+        processor = MyProcessor()
+
+        pipeline = Pipeline("non_default")
+        pipeline.add_processor("test", processor)
+
+        server = Server(
+            pipelines={"default": Pipeline("default"), "non_default": pipeline},
+        )
+        result = await server._add({"pipeline": "non_default", "input1": 5})
+        assert result is not None
+        assert result == {"message": "Document(s) added to pipeline"}
+
+    @pytest.mark.asyncio
+    @pytest.mark.xfail
+    async def test_add_invalid_input_to_non_default_pipeline(self):
+        # TODO This test should at least warn the user that the input is invalid
+        # Currently it runs without issue
+        # Though I think the responsiblity of checking
+        # the input should be on the pipeline or the processor
+        class MyProcessor(BaseProcessor):
+            input_types = {
+                "input1": int,
+            }
+
+            def process(self, input: Production) -> Production:
+                return input
+
+        processor = MyProcessor()
+
+        pipeline = Pipeline("non_default")
+        pipeline.add_processor("test", processor)
+
+        server = Server(
+            pipelines={"default": Pipeline("default"), "non_default": pipeline},
+        )
+
+        with pytest.raises(HTTPException) as exc_info:
+            await server._add({"pipeline": "non_default", "incorrect_input_key": 5})
+
+    @pytest.mark.asyncio
+    async def test_add_input_to_missing_pipeline(self):
+        server = Server(
+            pipelines={},
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await server._add({"pipeline": "missing"})
+
+    @pytest.mark.asyncio
+    async def test_pipeline_not_specified_and_no_default_pipeline(self):
+        server = Server(
+            pipelines={},
+        )
+
+        with pytest.raises(HTTPException) as exc_info:
+            await server._add({})
