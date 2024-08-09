@@ -6,8 +6,9 @@ setup(
     install_requires=[
         "fastapi",
         "uvicorn",
+        "loguru",
     ],
-    packages= find_packages(),
+    packages=find_packages(),
     entry_points="""
         [console_scripts]
         papercast=papercast.scripts.papercast:main
