@@ -152,7 +152,6 @@ class TestServer:
         server = Server(
             pipelines={"default": Pipeline("default")},
         )
-        print(server.serialize_pipelines())
         assert server.serialize_pipelines() == {
             "pipelines": {"default": {"subscribers": [], "processors": []}}
         }
@@ -179,7 +178,6 @@ class TestServer:
         server = Server(
             pipelines={"default": pipeline},
         )
-        print(server.serialize_pipelines())
 
         assert server.serialize_pipelines() == {
             "pipelines": {
@@ -217,7 +215,6 @@ class TestServer:
         server = Server(
             pipelines={"default": pipeline},
         )
-        print(server.serialize_pipelines())
 
         assert server.serialize_pipelines() == {
             "pipelines": {
