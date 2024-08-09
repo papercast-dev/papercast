@@ -193,3 +193,41 @@ class TestServer:
                 }
             }
         }
+
+    def test_serialize_pipelines_with_typing_types(self):
+        class MyProcessor(BaseProcessor):
+            input_types = {
+                "input1": List[int],
+            }
+
+            output_types = {
+                "output1": List[int],
+            }
+
+            def process(self, input: Production) -> Production:
+                return input
+
+        processor = MyProcessor()
+
+        pipeline = Pipeline("test")
+
+        pipeline.add_processor("test", processor)
+
+        server = Server(
+            pipelines={"default": pipeline},
+        )
+        print(server.serialize_pipelines())
+
+        assert server.serialize_pipelines() == {
+            "pipelines": {
+                "default": {
+                    "subscribers": [],
+                    "processors": [
+                        {
+                            "input_types": {"input1": "typing.List[int]"},
+                            "output_types": {"output1": "typing.List[int]"},
+                        }
+                    ],
+                }
+            }
+        }
