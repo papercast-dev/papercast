@@ -90,7 +90,9 @@ class Pipeline:
             else:
                 return False
         elif get_origin(type1) is not None and get_origin(type2) is not None:
-            if len(get_args(type1)) == len(get_args(type2)):
+            if len(get_args(type1)) == len(get_args(type2)) and get_origin(
+                type1
+            ) == get_origin(type2):
                 return all(
                     cls.is_subtype(arg1, arg2)
                     for arg1, arg2 in zip(get_args(type1), get_args(type2))
