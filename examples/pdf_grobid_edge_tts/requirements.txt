@@ -1,0 +1,5 @@
+python-dotenv
+spacy
+en_core_web_sm
+beautifulsoup4
+edge-tts
